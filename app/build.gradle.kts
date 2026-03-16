@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

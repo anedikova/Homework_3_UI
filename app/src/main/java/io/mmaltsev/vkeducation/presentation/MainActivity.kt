@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.mmaltsev.vkeducation.presentation.appdetails.AppDetailsScreen
-import io.mmaltsev.vkeducation.presentation.appslist.AppsListScreen
+import io.mmaltsev.vkeducation.presentation.appslist.AppsListRoute
 import io.mmaltsev.vkeducation.presentation.theme.VkEducationTheme
 
 private object Routes {
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     composable(Routes.LIST) {
-                        AppsListScreen(
+                        AppsListRoute(
                             onAppClick = {
                                 navController.navigate(Routes.DETAILS)
                             }

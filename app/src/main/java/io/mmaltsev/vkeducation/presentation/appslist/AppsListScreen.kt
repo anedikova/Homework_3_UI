@@ -11,94 +11,94 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 
-private data class StoreAppUi(
-    val id: String,
-    val title: String,
-    val subtitle: String,
-    val category: String,
-    val iconText: String,
-    val iconColor: Color,
-)
+@Composable
+fun AppsListRoute(
+    onAppClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AppsListViewModel = viewModel(),
+) {
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-private val apps = listOf(
-    StoreAppUi(
-        id = "sber",
-        title = "СберБанк Онлайн — с Салютом",
-        subtitle = "Больше чем банк",
-        category = "Финансы",
-        iconText = "С",
-        iconColor = Color(0xFF42C05E),
-    ),
-    StoreAppUi(
-        id = "browser",
-        title = "Яндекс.Браузер — с Алисой",
-        subtitle = "Быстрый и безопасный браузер",
-        category = "Инструменты",
-        iconText = "Я",
-        iconColor = Color(0xFFFF4B3A),
-    ),
-    StoreAppUi(
-        id = "mail",
-        title = "Почта Mail.ru",
-        subtitle = "Почтовый клиент для любых ящиков",
-        category = "Инструменты",
-        iconText = "@",
-        iconColor = Color(0xFF3366FF),
-    ),
-    StoreAppUi(
-        id = "navigator",
-        title = "Яндекс Навигатор",
-        subtitle = "Парковки и заправки — по пути",
-        category = "Транспорт",
-        iconText = "N",
-        iconColor = Color(0xFFFFD54F),
-    ),
-    StoreAppUi(
-        id = "mts",
-        title = "Мой МТС",
-        subtitle = "Мой МТС — центр экосистемы МТС",
-        category = "Инструменты",
-        iconText = "М",
-        iconColor = Color(0xFFFF4A4A),
-    ),
-    StoreAppUi(
-        id = "yandex",
-        title = "Яндекс — с Алисой",
-        subtitle = "Яндекс — поиск всегда под рукой",
-        category = "Инструменты",
-        iconText = "Я",
-        iconColor = Color(0xFFFF7A45),
-    ),
-)
+    LaunchedEffect(viewModel) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is AppsListEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
+
+    Scaffold(
+        modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
+    ) { innerPadding ->
+        when (val currentState = uiState) {
+            AppsListUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is AppsListUiState.Content -> {
+                AppsListScreen(
+                    apps = currentState.apps,
+                    onAppClick = onAppClick,
+                    onLogoClick = viewModel::onLogoClick,
+                    modifier = Modifier.padding(innerPadding),
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun AppsListScreen(
+    apps: List<StoreAppUi>,
     onAppClick: (String) -> Unit,
+    onLogoClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF5F6FA))
-            .safeDrawingPadding()
+            .safeDrawingPadding(),
     ) {
         RuStoreTopBar()
 
@@ -113,7 +113,8 @@ fun AppsListScreen(
             ) { app ->
                 AppListItem(
                     app = app,
-                    onClick = { onAppClick(app.id) },
+                    onItemClick = { onAppClick(app.id) },
+                    onLogoClick = { onLogoClick(app.title) },
                 )
             }
         }
@@ -157,28 +158,28 @@ private fun RuStoreTopBar() {
 @Composable
 private fun AppListItem(
     app: StoreAppUi,
-    onClick: () -> Unit,
+    onItemClick: () -> Unit,
+    onLogoClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = Color.White,
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 14.dp)
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 14.dp),
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
                     modifier = Modifier
                         .size(58.dp)
-                        .background(app.iconColor, RoundedCornerShape(16.dp)),
+                        .background(app.iconColor, RoundedCornerShape(16.dp))
+                        .clickable(onClick = onLogoClick),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -192,7 +193,9 @@ private fun AppListItem(
                 Spacer(modifier = Modifier.size(14.dp))
 
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = onItemClick),
                 ) {
                     Text(
                         text = app.title,
