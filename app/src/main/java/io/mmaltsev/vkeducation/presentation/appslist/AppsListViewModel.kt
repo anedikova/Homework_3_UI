@@ -1,15 +1,22 @@
 package io.mmaltsev.vkeducation.presentation.appslist
 
-import androidx.compose.ui.graphics.Color
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.mmaltsev.vkeducation.domain.appslist.AppsRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AppsListViewModel : ViewModel() {
+@HiltViewModel
+class AppsListViewModel @Inject constructor(
+    private val appsRepository: AppsRepository,
+    private val uiMapper: AppsListUiMapper,
+) : ViewModel() {
 
     private val _state = MutableStateFlow<AppsListUiState>(
         AppsListUiState.Loading,
@@ -24,58 +31,15 @@ class AppsListViewModel : ViewModel() {
     }
 
     private fun loadApps() {
-        _state.value = AppsListUiState.Content(
-            apps = listOf(
-                StoreAppUi(
-                    id = "sber",
-                    title = "СберБанк Онлайн — с Салютом",
-                    subtitle = "Больше чем банк",
-                    category = "Финансы",
-                    iconText = "С",
-                    iconColor = Color(0xFF42C05E),
-                ),
-                StoreAppUi(
-                    id = "browser",
-                    title = "Яндекс.Браузер — с Алисой",
-                    subtitle = "Быстрый и безопасный браузер",
-                    category = "Инструменты",
-                    iconText = "Я",
-                    iconColor = Color(0xFFFF4B3A),
-                ),
-                StoreAppUi(
-                    id = "mail",
-                    title = "Почта Mail.ru",
-                    subtitle = "Почтовый клиент для любых ящиков",
-                    category = "Инструменты",
-                    iconText = "@",
-                    iconColor = Color(0xFF3366FF),
-                ),
-                StoreAppUi(
-                    id = "navigator",
-                    title = "Яндекс Навигатор",
-                    subtitle = "Парковки и заправки — по пути",
-                    category = "Транспорт",
-                    iconText = "N",
-                    iconColor = Color(0xFFFFD54F),
-                ),
-                StoreAppUi(
-                    id = "mts",
-                    title = "Мой МТС",
-                    subtitle = "Мой МТС — центр экосистемы МТС",
-                    category = "Инструменты",
-                    iconText = "М",
-                    iconColor = Color(0xFFFF4A4A),
-                ),
-                StoreAppUi(
-                    id = "yandex",
-                    title = "Яндекс — с Алисой",
-                    subtitle = "Яндекс — поиск всегда под рукой",
-                    category = "Инструменты",
-                    iconText = "Я",
-                    iconColor = Color(0xFFFF7A45),
-                ),
-            ),
-        )
+        viewModelScope.launch {
+            val apps = appsRepository.getApps().map { app ->
+                uiMapper.toUi(app)
+            }
+
+            _state.value = AppsListUiState.Content(
+                apps = apps,
+            )
+        }
     }
 
     fun onLogoClick(appTitle: String) {
