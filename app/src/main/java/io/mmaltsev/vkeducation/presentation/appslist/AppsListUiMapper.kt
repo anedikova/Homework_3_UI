@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import io.mmaltsev.vkeducation.domain.appslist.App
 import javax.inject.Inject
 
-class AppsListUiMapper @Inject constructor() {
+class AppsListUiMapper {
 
     fun toUi(app: App): StoreAppUi {
         return StoreAppUi(
