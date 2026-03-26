@@ -32,13 +32,22 @@ class AppsListViewModel @Inject constructor(
 
     private fun loadApps() {
         viewModelScope.launch {
-            val apps = appsRepository.getApps().map { app ->
-                uiMapper.toUi(app)
-            }
+            _state.value = AppsListUiState.Loading
 
-            _state.value = AppsListUiState.Content(
-                apps = apps,
-            )
+            runCatching {
+                appsRepository.getApps().map { app ->
+                    uiMapper.toUi(app)
+                }
+            }.onSuccess { apps ->
+                _state.value = AppsListUiState.Content(apps)
+            }.onFailure {
+                _state.value = AppsListUiState.Content(emptyList())
+                _events.send(
+                    AppsListEvent.ShowSnackbar(
+                        "Не удалось загрузить каталог"
+                    )
+                )
+            }
         }
     }
 
