@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class AppsListMapper @Inject constructor() {
 
-    fun toDomain(dto: AppDto): App {
+    fun toDomain(dto: CatalogAppDto): App {
         return App(
             id = dto.id,
             title = dto.name.ifBlank { "Без названия" },
