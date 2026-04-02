@@ -5,5 +5,4 @@ data class App(
     val title: String,
     val subtitle: String,
     val category: String,
-    val iconKey: String,
 )
