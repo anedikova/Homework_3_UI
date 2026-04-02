@@ -1,9 +1,11 @@
 package io.mmaltsev.vkeducation.data.appdetails
 
 import io.mmaltsev.vkeducation.domain.appdetails.AppDetails
-
 class AppDetailsMapper {
-    fun toDomain(dto: AppDetailsDto): AppDetails = AppDetails(
+    fun toDomain(
+        dto: AppDetailsDto,
+        isInWishlist: Boolean = false,
+    ): AppDetails = AppDetails(
         id = dto.id,
         name = dto.name,
         developer = dto.developer,
@@ -13,5 +15,6 @@ class AppDetailsMapper {
         iconUrl = dto.icon,
         screenshotUrlList = dto.screenshots,
         description = dto.description,
+        isInWishlist = isInWishlist,
     )
 }

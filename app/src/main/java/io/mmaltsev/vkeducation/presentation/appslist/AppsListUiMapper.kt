@@ -14,6 +14,7 @@ class AppsListUiMapper @Inject constructor() {
             category = app.category,
             iconText = app.title.firstOrNull()?.uppercase() ?: "?",
             iconColor = colorByCategory(app.category),
+            iconUrl = app.iconUrl,
         )
     }
 

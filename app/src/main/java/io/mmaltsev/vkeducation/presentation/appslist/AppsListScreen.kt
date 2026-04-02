@@ -35,6 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.SubcomposeAsyncImage
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -178,16 +181,69 @@ private fun AppListItem(
                 Box(
                     modifier = Modifier
                         .size(58.dp)
-                        .background(app.iconColor, RoundedCornerShape(16.dp))
                         .clickable(onClick = onLogoClick),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = app.iconText,
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    if (app.iconUrl.isNotBlank()) {
+                        SubcomposeAsyncImage(
+                            model = app.iconUrl,
+                            contentDescription = app.title,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp)),
+                            contentScale = ContentScale.Crop,
+                            loading = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            app.iconColor,
+                                            RoundedCornerShape(16.dp),
+                                        ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = app.iconText,
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
+                            },
+                            error = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            app.iconColor,
+                                            RoundedCornerShape(16.dp),
+                                        ),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = app.iconText,
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
+                            },
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(app.iconColor, RoundedCornerShape(16.dp)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = app.iconText,
+                                color = Color.White,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.size(14.dp))

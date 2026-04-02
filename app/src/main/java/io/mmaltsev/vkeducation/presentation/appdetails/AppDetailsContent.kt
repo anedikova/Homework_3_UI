@@ -26,13 +26,16 @@ fun AppDetailsContent(
     onReadMoreClick: () -> Unit,
     onDeveloperClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onWishlistClick: () -> Unit,
 ) {
     val appDetails = content.appDetails
     val descriptionCollapsed = content.descriptionCollapsed
 
     Column(modifier) {
         Toolbar(
+            isInWishlist = content.isInWishlist,
             onBackClick = onBackClick,
+            onWishlistClick = onWishlistClick,
             onShareClick = onShareClick,
         )
         Spacer(Modifier.height(8.dp))
@@ -97,9 +100,11 @@ private fun Preview() {
                         "https://static.rustore.ru/imgproxy/TjeurtC7BczOVJt74XhjGYuQnG1l4rx6zpDqyMb00GY/preset:web_scr_lnd_335/plain/https://static.rustore.ru/apk/393868735/content/SCREENSHOT/08318f76-7a9c-43aa-b4a7-1aa878d00861.jpg@webp",
                     ),
                     iconUrl = "https://static.rustore.ru/imgproxy/APsbtHxkVa4MZ0DXjnIkSwFQ_KVIcqHK9o3gHY6pvOQ/preset:web_app_icon_62/plain/https://static.rustore.ru/apk/393868735/content/ICON/3f605e3e-f5b3-434c-af4d-77bc5f38820e.png@webp",
-                    description = "Легендарный рейд героев в Фэнтези РПГ. Станьте героем гильдии и зразите мастера подземелья!"
+                    description = "Легендарный рейд героев в Фэнтези РПГ. Станьте героем гильдии и зразите мастера подземелья!",
+                    isInWishlist = false,
                 ),
                 descriptionCollapsed = false,
+                isInWishlist = false,
             ),
             onReadMoreClick = {},
             onBackClick = {},
@@ -107,6 +112,7 @@ private fun Preview() {
             onInstallClick = {},
             onDeveloperClick = {},
             modifier = Modifier.fillMaxSize(),
+            onWishlistClick = {},
         )
     }
 }

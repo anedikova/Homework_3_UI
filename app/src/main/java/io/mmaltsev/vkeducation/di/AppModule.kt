@@ -2,7 +2,7 @@ package io.mmaltsev.vkeducation.di
 
 import android.app.Application
 import androidx.room.Room
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,7 +59,9 @@ object AppModule {
             app,
             AppDatabase::class.java,
             AppDatabase.DATABASE_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides

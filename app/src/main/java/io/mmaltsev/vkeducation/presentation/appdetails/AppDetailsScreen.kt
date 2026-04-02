@@ -51,7 +51,7 @@ fun AppDetailsScreen() {
 
             is AppDetailsState.Error -> {
                 AppDetailsError(
-                    onRefreshClick = { viewModel.getAppDetails() },
+                    onRefreshClick = { viewModel.refresh() },
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding()
@@ -65,6 +65,9 @@ fun AppDetailsScreen() {
                     onBackClick = {
                         // TODO: Открыть предыдущий экран через Jetpack Navigation
                         viewModel.showUnderDevelopmentMessage()
+                    },
+                    onWishlistClick = {
+                        viewModel.toggleWishlist()
                     },
                     onShareClick = {
                         viewModel.showUnderDevelopmentMessage()
