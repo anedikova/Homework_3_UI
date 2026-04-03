@@ -30,7 +30,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
 
         val domain = mapper.toDomain(
             dto = dto,
-            isInWishlist = cachedEntity?.isInWishlist ?: false,
+            isInWishlist = false,
         )
 
         val entity = entityMapper.toEntity(domain)
