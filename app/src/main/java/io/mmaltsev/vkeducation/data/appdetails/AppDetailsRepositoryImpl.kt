@@ -20,7 +20,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
 ) : AppDetailsRepository {
 
     override suspend fun getAppDetails(id: String): AppDetails {
-        val cachedEntity = dao.getAppDetailsById(id)
+        val cachedEntity = dao.observeAppDetails(id).first()
 
         if (cachedEntity != null) {
             return entityMapper.toDomain(cachedEntity)

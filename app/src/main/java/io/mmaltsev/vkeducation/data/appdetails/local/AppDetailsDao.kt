@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 interface AppDetailsDao {
 
     @Query("SELECT * FROM app_details WHERE id = :id LIMIT 1")
-    suspend fun getAppDetailsById(id: String): AppDetailsEntity?
-
-    @Query("SELECT * FROM app_details WHERE id = :id LIMIT 1")
     fun observeAppDetails(id: String): Flow<AppDetailsEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
