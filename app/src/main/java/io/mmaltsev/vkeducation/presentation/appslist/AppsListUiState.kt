@@ -11,6 +11,7 @@ data class StoreAppUi(
     val category: String,
     val iconText: String,
     val iconColor: Color,
+    val iconUrl: String,
 )
 
 sealed interface AppsListUiState {

@@ -12,6 +12,7 @@ class AppsListMapper @Inject constructor() {
             title = dto.name.ifBlank { "Без названия" },
             subtitle = dto.developer.ifBlank { "Разработчик не указан" },
             category = dto.category.ifBlank { "Без категории" },
+            iconUrl = dto.iconUrl,
         )
     }
     fun toDetailsDomain(dto: CatalogAppDetailsDto): CatalogAppDetails {

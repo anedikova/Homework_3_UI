@@ -8,4 +8,5 @@ data class CatalogAppDto(
     val name: String = "",
     val developer: String = "",
     val category: String = "",
+    val iconUrl: String = "",
 )
